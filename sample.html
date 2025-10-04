@@ -1,105 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Circle Progress Widget Config</title>
-  <style>
-    body { font-family: sans-serif; padding: 20px; }
-    .form-group { margin-bottom: 15px; }
-    label { display: block; margin-bottom: 5px; }
-    input, button { padding: 6px; font-size: 14px; }
-    .status { margin-top: 10px; font-size: 13px; color: green; }
-  </style>
-</head>
-<body>
-  <h1>Circle Progress Config</h1>
+<input type="text" class="inpuText" placeholder="Type something..." />
 
-  <div class="form-group">
-    <label><input type="checkbox" id="show_top_text" checked> Show Top Text</label>
-    <input type="text" id="topText" value="Progress Top Text">
-  </div>
+<script>
+  // Grab input value when it changes
+  document.querySelector('.inpuText').addEventListener('input', (e) => {
+    const value = e.target.value;
 
-  <div class="form-group">
-    <label><input type="checkbox" id="show_number_progress" checked> Show Number</label>
-    <input type="number" id="num" value="100">
-  </div>
-
-  <div class="form-group">
-    <label><input type="checkbox" id="show_bottom_text" checked> Show Bottom Text</label>
-    <input type="text" id="botText" value="Bottom Label">
-  </div>
-
-  <div class="form-group">
-    <label>Animation Speed</label>
-    <input type="range" id="speed" min="1" max="20" value="8">
-    <span id="speedValue">8</span>
-  </div>
-
-  <div class="status" id="status">Changes auto-saved</div>
-
-  <script>
-    // --- Parse URL params from Duda
-    function getParams() {
-      const params = {};
-      window.location.search.substring(1).split("&").forEach(p => {
-        if (!p) return;
-        let [k, v] = p.split("=");
-        params[decodeURIComponent(k)] = decodeURIComponent(v || "");
-      });
-      return params;
-    }
-
-    const params = getParams();
-    const storageKey = `widget_config_${params.siteId}_${params.elementId}`;
-
-    // --- DOM elements
-    const els = {
-      showTop: document.getElementById("show_top_text"),
-      showNum: document.getElementById("show_number_progress"),
-      showBot: document.getElementById("show_bottom_text"),
-      topText: document.getElementById("topText"),
-      num: document.getElementById("num"),
-      botText: document.getElementById("botText"),
-      speed: document.getElementById("speed"),
-      speedValue: document.getElementById("speedValue"),
-      status: document.getElementById("status")
-    };
-
-    // --- Load saved config
-    const saved = localStorage.getItem(storageKey);
-    if (saved) {
-      const cfg = JSON.parse(saved);
-      els.showTop.checked = cfg.show_top_text;
-      els.topText.value = cfg.topText;
-      els.showNum.checked = cfg.show_number_progress;
-      els.num.value = cfg.num;
-      els.showBot.checked = cfg.show_bottom_text;
-      els.botText.value = cfg.botText;
-      els.speed.value = cfg.speed;
-      els.speedValue.textContent = cfg.speed;
-    }
-
-    // --- Save function
-    function saveConfig() {
-      const config = {
-        show_top_text: els.showTop.checked,
-        show_number_progress: els.showNum.checked,
-        show_bottom_text: els.showBot.checked,
-        topText: els.topText.value,
-        num: els.num.value,
-        botText: els.botText.value,
-        speed: els.speed.value
-      };
-      localStorage.setItem(storageKey, JSON.stringify(config));
-      els.speedValue.textContent = config.speed;
-      els.status.textContent = "✅ Saved at " + new Date().toLocaleTimeString();
-      console.log("Config saved:", config);
-    }
-
-    // --- Auto-save on change
-    [els.showTop, els.showNum, els.showBot, els.topText, els.num, els.botText, els.speed]
-      .forEach(el => el.addEventListener("input", saveConfig));
-  </script>
-</body>
-</html>
+    // Send this value back to the Duda widget editor
+    window.parent.postMessage({
+      type: 'update',
+      key: 'myInputValue',
+      value: value
+    }, '*');
+  });
+</script>
