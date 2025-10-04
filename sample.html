@@ -3,67 +3,283 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Duda Widget Config IFrame</title>
+  <title>Circle Progress Widget Config</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    * {
+      box-sizing: border-box;
       margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #ffffff;
+      color: #1a1a1a;
       padding: 20px;
-      background: #f7f9fc;
-      color: #333;
-    }
-    h1 {
-      font-size: 20px;
-      margin-bottom: 10px;
-    }
-    .params {
-      background: #fff;
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
       font-size: 14px;
     }
+
+    .config-section {
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .config-section:last-child {
+      border-bottom: none;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #111827;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
     label {
       display: block;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-    input[type="text"], input[type="color"] {
-      padding: 6px;
-      width: 100%;
-      margin-top: 4px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-    }
-    .status {
-      margin-top: 12px;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: #374151;
       font-size: 13px;
-      color: #0073e6;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .toggle-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+    }
+
+    .toggle-label {
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 0;
+    }
+
+    /* Toggle Switch */
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #d1d5db;
+      transition: 0.3s;
+      border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: #3b82f6;
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(20px);
+    }
+
+    .range-group {
+      margin-bottom: 16px;
+    }
+
+    .range-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .range-value {
+      font-weight: 600;
+      color: #3b82f6;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #e5e7eb;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #3b82f6;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #3b82f6;
+      cursor: pointer;
+      border: none;
+      transition: 0.2s;
+    }
+
+    input[type="range"]::-moz-range-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .helper-text {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+
+    .status {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #10b981;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+    }
+
+    .status.show {
+      opacity: 1;
+      transform: translateY(0);
     }
   </style>
 </head>
 <body>
-  <h1>Widget Editor Panel</h1>
   
-  <div class="params" id="paramsBox">
-    <strong>Instance Parameters</strong>
-    <pre id="paramsOutput"></pre>
-  </div>
-  
-  <div id="configBox">
-    <label for="text">Widget Text:</label>
-    <input type="text" id="text" placeholder="Enter custom text" />
+  <!-- Display Options -->
+  <div class="config-section">
+    <div class="section-title">Display Options</div>
+    
+    <div class="toggle-group">
+      <label class="toggle-label">Show Top Text</label>
+      <label class="toggle-switch">
+        <input type="checkbox" id="show_top_text" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
 
-    <label for="color">Background Color:</label>
-    <input type="color" id="color" value="#ffffff" />
+    <div class="toggle-group">
+      <label class="toggle-label">Show Number Progress</label>
+      <label class="toggle-switch">
+        <input type="checkbox" id="show_number_progress" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="toggle-group">
+      <label class="toggle-label">Show Bottom Text</label>
+      <label class="toggle-switch">
+        <input type="checkbox" id="show_bottom_text" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
   </div>
 
-  <div class="status" id="status">Changes will be saved automatically.</div>
+  <!-- Top Text -->
+  <div class="config-section" id="top-text-section">
+    <div class="section-title">Top Text</div>
+    
+    <div class="form-group">
+      <label for="topText">Text Content</label>
+      <input type="text" id="topText" placeholder="Enter top text" value="Placeholder">
+    </div>
+  </div>
+
+  <!-- Number Progress -->
+  <div class="config-section" id="number-section">
+    <div class="section-title">Number Progress</div>
+    
+    <div class="form-group">
+      <label for="num">Target Number</label>
+      <input type="number" id="num" placeholder="Enter number" value="10000" min="0" step="1">
+      <div class="helper-text">The number to count up to</div>
+    </div>
+
+    <div class="range-group">
+      <div class="range-label-row">
+        <label>Animation Speed</label>
+        <span class="range-value" id="speedValue">8</span>
+      </div>
+      <input type="range" id="speed" min="1" max="20" value="8" step="1">
+      <div class="helper-text">Lower is slower, higher is faster</div>
+    </div>
+  </div>
+
+  <!-- Bottom Text -->
+  <div class="config-section" id="bottom-text-section">
+    <div class="section-title">Bottom Text</div>
+    
+    <div class="form-group">
+      <label for="botText">Text Content</label>
+      <input type="text" id="botText" placeholder="Enter bottom text" value="Neque porro quisquam est qui.">
+    </div>
+  </div>
+
+  <div class="status" id="status">✓ Saved</div>
 
   <script>
-    // --- Parse query parameters from URL ---
+    // Get query parameters
     function getQueryParams() {
       const params = {};
       const queryString = window.location.search.substring(1);
@@ -77,38 +293,176 @@
     }
 
     const params = getQueryParams();
-    document.getElementById("paramsOutput").textContent = JSON.stringify(params, null, 2);
+    console.log('Iframe loaded with params:', params);
 
-    // --- Auto save on input change ---
-    const textInput = document.getElementById("text");
-    const colorInput = document.getElementById("color");
-    const statusEl = document.getElementById("status");
+    // Get all form elements
+    const elements = {
+      show_top_text: document.getElementById('show_top_text'),
+      show_number_progress: document.getElementById('show_number_progress'),
+      show_bottom_text: document.getElementById('show_bottom_text'),
+      topText: document.getElementById('topText'),
+      num: document.getElementById('num'),
+      speed: document.getElementById('speed'),
+      speedValue: document.getElementById('speedValue'),
+      botText: document.getElementById('botText'),
+      topSection: document.getElementById('top-text-section'),
+      numberSection: document.getElementById('number-section'),
+      bottomSection: document.getElementById('bottom-text-section'),
+      status: document.getElementById('status')
+    };
 
-    function saveConfig() {
-      const config = {
-        text: textInput.value,
-        color: colorInput.value,
-        elementId: params.elementId,
-        siteId: params.siteId
-      };
+    // Update speed display
+    elements.speed.addEventListener('input', function() {
+      elements.speedValue.textContent = this.value;
+    });
 
-      // Simulate saving (replace with backend API call)
-      localStorage.setItem(`config_${config.siteId}_${config.elementId}`, JSON.stringify(config));
-
-      statusEl.textContent = "✅ Saved at " + new Date().toLocaleTimeString();
-      console.log("Saved config:", config);
+    // Toggle section visibility
+    function updateSectionVisibility() {
+      elements.topSection.style.display = elements.show_top_text.checked ? 'block' : 'none';
+      elements.numberSection.style.display = elements.show_number_progress.checked ? 'block' : 'none';
+      elements.bottomSection.style.display = elements.show_bottom_text.checked ? 'block' : 'none';
     }
 
-    // Save whenever any input changes
-    textInput.addEventListener("input", saveConfig);
-    colorInput.addEventListener("change", saveConfig);
+    elements.show_top_text.addEventListener('change', updateSectionVisibility);
+    elements.show_number_progress.addEventListener('change', updateSectionVisibility);
+    elements.show_bottom_text.addEventListener('change', updateSectionVisibility);
 
-    // Load existing config if present
-    const stored = localStorage.getItem(`config_${params.siteId}_${params.elementId}`);
-    if (stored) {
-      const cfg = JSON.parse(stored);
-      if (cfg.text) textInput.value = cfg.text;
-      if (cfg.color) colorInput.value = cfg.color;
+    // Get current configuration
+    function getConfig() {
+      return {
+        show_top_text: elements.show_top_text.checked,
+        show_number_progress: elements.show_number_progress.checked,
+        show_bottom_text: elements.show_bottom_text.checked,
+        topText: elements.topText.value,
+        num: elements.num.value,
+        speed: elements.speed.value,
+        botText: elements.botText.value
+      };
+    }
+
+    // Show save indicator
+    function showSaveStatus() {
+      elements.status.classList.add('show');
+      setTimeout(() => {
+        elements.status.classList.remove('show');
+      }, 2000);
+    }
+
+    // Save configuration to Duda
+    function saveConfig() {
+      const config = getConfig();
+      
+      // Send to parent window (Duda widget builder)
+      if (window.parent) {
+        window.parent.postMessage({
+          type: 'widgetConfig',
+          config: config,
+          elementId: params.elementId,
+          siteId: params.siteId
+        }, '*');
+      }
+
+      // Also save to localStorage as backup
+      const storageKey = `widget_config_${params.siteId}_${params.elementId}`;
+      localStorage.setItem(storageKey, JSON.stringify(config));
+      
+      console.log('Config saved:', config);
+      showSaveStatus();
+    }
+
+    // Load saved configuration
+    function loadConfig() {
+      const storageKey = `widget_config_${params.siteId}_${params.elementId}`;
+      const saved = localStorage.getItem(storageKey);
+      
+      if (saved) {
+        try {
+          const config = JSON.parse(saved);
+          
+          if (config.show_top_text !== undefined) elements.show_top_text.checked = config.show_top_text;
+          if (config.show_number_progress !== undefined) elements.show_number_progress.checked = config.show_number_progress;
+          if (config.show_bottom_text !== undefined) elements.show_bottom_text.checked = config.show_bottom_text;
+          if (config.topText !== undefined) elements.topText.value = config.topText;
+          if (config.num !== undefined) elements.num.value = config.num;
+          if (config.speed !== undefined) {
+            elements.speed.value = config.speed;
+            elements.speedValue.textContent = config.speed;
+          }
+          if (config.botText !== undefined) elements.botText.value = config.botText;
+          
+          updateSectionVisibility();
+          console.log('Config loaded:', config);
+        } catch (e) {
+          console.error('Error loading config:', e);
+        }
+      }
+    }
+
+    // Add event listeners for auto-save
+    const inputs = [
+      elements.show_top_text,
+      elements.show_number_progress,
+      elements.show_bottom_text,
+      elements.topText,
+      elements.num,
+      elements.speed,
+      elements.botText
+    ];
+
+    inputs.forEach(input => {
+      if (input.type === 'checkbox') {
+        input.addEventListener('change', saveConfig);
+      } else {
+        input.addEventListener('input', debounce(saveConfig, 500));
+      }
+    });
+
+    // Debounce function to avoid too many saves
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    // Listen for messages from parent
+    window.addEventListener('message', function(event) {
+      console.log('Message received:', event.data);
+      
+      if (event.data.type === 'loadConfig' && event.data.config) {
+        const config = event.data.config;
+        
+        if (config.show_top_text !== undefined) elements.show_top_text.checked = config.show_top_text;
+        if (config.show_number_progress !== undefined) elements.show_number_progress.checked = config.show_number_progress;
+        if (config.show_bottom_text !== undefined) elements.show_bottom_text.checked = config.show_bottom_text;
+        if (config.topText !== undefined) elements.topText.value = config.topText;
+        if (config.num !== undefined) elements.num.value = config.num;
+        if (config.speed !== undefined) {
+          elements.speed.value = config.speed;
+          elements.speedValue.textContent = config.speed;
+        }
+        if (config.botText !== undefined) elements.botText.value = config.botText;
+        
+        updateSectionVisibility();
+      }
+    });
+
+    // Initialize
+    loadConfig();
+    updateSectionVisibility();
+
+    // Notify parent that iframe is ready
+    if (window.parent) {
+      window.parent.postMessage({
+        type: 'iframeReady',
+        elementId: params.elementId,
+        siteId: params.siteId
+      }, '*');
     }
   </script>
 </body>
