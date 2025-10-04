@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Duda Widget Config IFrame</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f7f9fc;
+      color: #333;
+    }
+    h1 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+    .params {
+      background: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input[type="text"], input[type="color"] {
+      padding: 6px;
+      width: 100%;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    .status {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #0073e6;
+    }
+  </style>
+</head>
+<body>
+  <h1>Widget Editor Panel</h1>
+  
+  <div class="params" id="paramsBox">
+    <strong>Instance Parameters</strong>
+    <pre id="paramsOutput"></pre>
+  </div>
+  
+  <form id="configForm">
+    <label for="text">Widget Text:</label>
+    <input type="text" id="text" name="text" placeholder="Enter custom text" />
+
+    <label for="color">Background Color:</label>
+    <input type="color" id="color" name="color" value="#ffffff" />
+  </form>
+
+  <div class="status" id="status">Changes will be saved automatically.</div>
+
+  <script>
+    // --- Parse query parameters from URL ---
+    function getQueryParams() {
+      const params = {};
+      const queryString = window.location.search.substring(1);
+      const pairs = queryString.split("&");
+      for (const pair of pairs) {
+        if (!pair) continue;
+        const [key, value] = pair.split("=");
+        params[decodeURIComponent(key)] = decodeURIComponent(value || "");
+      }
+      return params;
+    }
+
+    const params = getQueryParams();
+    document.getElementById("paramsOutput").textContent = JSON.stringify(params, null, 2);
+
+    // --- Auto save on input change ---
+    const form = document.getElementById("configForm");
+    const statusEl = document.getElementById("status");
+
+    function saveConfig() {
+      const config = {
+        text: form.text.value,
+        color: form.color.value,
+        elementId: params.elementId,
+        siteId: params.siteId
+      };
+
+      // Simulate saving (replace with backend API call)
+      localStorage.setItem(`config_${config.siteId}_${config.elementId}`, JSON.stringify(config));
+
+      statusEl.textContent = "✅ Saved at " + new Date().toLocaleTimeString();
+      console.log("Saved config:", config);
+    }
+
+    // Save whenever any input changes
+    form.text.addEventListener("input", saveConfig);
+    form.color.addEventListener("change", saveConfig);
+
+    // Load existing config if present
+    const stored = localStorage.getItem(`config_${params.siteId}_${params.elementId}`);
+    if (stored) {
+      const cfg = JSON.parse(stored);
+      if (cfg.text) form.text.value = cfg.text;
+      if (cfg.color) form.color.value = cfg.color;
+    }
+  </script>
+</body>
+</html>
