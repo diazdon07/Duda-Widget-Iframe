@@ -52,13 +52,13 @@
     <pre id="paramsOutput"></pre>
   </div>
   
-  <form id="configForm">
+  <div id="configBox">
     <label for="text">Widget Text:</label>
-    <input type="text" id="text" name="text" placeholder="Enter custom text" />
+    <input type="text" id="text" placeholder="Enter custom text" />
 
     <label for="color">Background Color:</label>
-    <input type="color" id="color" name="color" value="#ffffff" />
-  </form>
+    <input type="color" id="color" value="#ffffff" />
+  </div>
 
   <div class="status" id="status">Changes will be saved automatically.</div>
 
@@ -80,13 +80,14 @@
     document.getElementById("paramsOutput").textContent = JSON.stringify(params, null, 2);
 
     // --- Auto save on input change ---
-    const form = document.getElementById("configForm");
+    const textInput = document.getElementById("text");
+    const colorInput = document.getElementById("color");
     const statusEl = document.getElementById("status");
 
     function saveConfig() {
       const config = {
-        text: form.text.value,
-        color: form.color.value,
+        text: textInput.value,
+        color: colorInput.value,
         elementId: params.elementId,
         siteId: params.siteId
       };
@@ -99,15 +100,15 @@
     }
 
     // Save whenever any input changes
-    form.text.addEventListener("input", saveConfig);
-    form.color.addEventListener("change", saveConfig);
+    textInput.addEventListener("input", saveConfig);
+    colorInput.addEventListener("change", saveConfig);
 
     // Load existing config if present
     const stored = localStorage.getItem(`config_${params.siteId}_${params.elementId}`);
     if (stored) {
       const cfg = JSON.parse(stored);
-      if (cfg.text) form.text.value = cfg.text;
-      if (cfg.color) form.color.value = cfg.color;
+      if (cfg.text) textInput.value = cfg.text;
+      if (cfg.color) colorInput.value = cfg.color;
     }
   </script>
 </body>
